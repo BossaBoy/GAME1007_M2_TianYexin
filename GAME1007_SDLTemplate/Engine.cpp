@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <SDL_image.h>
 
 int Engine::Init(const char* title, int xPos, int yPos, int width, int height, int flags)
 {
@@ -17,6 +18,13 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 			{
 				// Initialize subsystems later...
 				cout << "Third pass." << endl;
+
+				if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != 0)
+				{
+					m_pShipTexture = IMG_LoadTexture(m_pRenderer, "spaceship.png");
+					m_pBGTexture = IMG_LoadTexture(m_pRenderer, "Background.png");
+					
+				}
 			}
 			else return false; // Renderer creation failed.
 		}
@@ -25,6 +33,8 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	else return false; // initalization failed.
 	m_fps = (Uint32)round(1.0 / (double)FPS * 1000); // Converts FPS into milliseconds, e.g. 16.67
 	m_keystates = SDL_GetKeyboardState(nullptr);
+	m_player = { WIDTH / 2, HEIGHT / 2, 35, 55 };
+	m_dst = { WIDTH / 4, HEIGHT / 2, 99, 63 };
 	cout << "Initialization successful!" << endl;
 	m_running = true;
 	return true;
@@ -49,9 +59,28 @@ void Engine::HandleEvents()
 	}
 }
 
+bool Engine::KeyDown(SDL_Scancode c)
+{
+	if (m_keystates != nullptr)
+	{
+		if (m_keystates[c] == 1) // Key we're testing for is down.
+			return true;
+	}
+	return false;
+}
+
 void Engine::Update()
 {
+	//cout << "Updating game..." << endl;
+	if (KeyDown(SDL_SCANCODE_S) && m_dst.y < (HEIGHT - m_dst.h))
+		m_dst.y += SPEED;
+	if (KeyDown(SDL_SCANCODE_W) && m_dst.y > 0)
+		m_dst.y -= SPEED;
 
+	if (KeyDown(SDL_SCANCODE_A) && m_dst.x > 0)
+		m_dst.x -= SPEED;
+	if (KeyDown(SDL_SCANCODE_D) && m_dst.x < ((WIDTH / 2) - m_dst.w))
+		m_dst.x += SPEED;
 }
 
 void Engine::Render()
@@ -59,6 +88,9 @@ void Engine::Render()
 	SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
 	SDL_RenderClear(m_pRenderer);
 	// Any drawing here...
+	SDL_RenderCopy(m_pRenderer, m_pBGTexture, NULL, NULL);
+
+	SDL_RenderCopy(m_pRenderer, m_pShipTexture, NULL, &m_dst);
 
 	SDL_RenderPresent(m_pRenderer); // Flip buffers - send data to window.
 }
@@ -101,6 +133,9 @@ void Engine::Clean()
 	cout << "Cleaning engine..." << endl;
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
+	SDL_DestroyTexture(m_pShipTexture);
+	SDL_DestroyTexture(m_pBGTexture);
+	IMG_Quit();
 	SDL_Quit();
 }
 

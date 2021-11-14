@@ -24,6 +24,7 @@
     <ProjectGuid>{bdeba2d2-3ea2-4761-a1ef-0e64df4f2e3e}</ProjectGuid>
     <RootNamespace>GAME1007SDLTemplate</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>GAME1007_M2_TianYexin</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

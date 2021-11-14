@@ -7,7 +7,7 @@
 #define FPS 60
 #define WIDTH 1024
 #define HEIGHT 768
-//#define SPEED 5
+#define SPEED 5
 using namespace std;
 
 class Engine
@@ -19,13 +19,12 @@ private: // private properties.
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;
 
-	//SDL_Texture* m_pShipTexture;
-	//SDL_Texture* m_pBGTexture;
+	SDL_Texture* m_pShipTexture;
+	SDL_Texture* m_pBGTexture;
 
-	//SDL_Rect g_player; // For primitive rectangle.
-	//SDL_Rect /*g_src,*/ g_dst; // For the ship sprite.
-
-	//bool g_firing = false;
+	SDL_Rect m_player;
+	SDL_Rect /*g_src,*/ m_dst; // For the ship sprite.
+	// Background needs neither a source or destination rectangle.
 
 private: // private methods prototypes.
 	int Init(const char* title, int xPos, int yPos, int width, int height, int flags);
@@ -35,10 +34,12 @@ private: // private methods prototypes.
 	void Update();
 	void Render();
 	void Sleep();
+	bool KeyDown(SDL_Scancode c);
 	/*void Clean();*/
 
 public: // public method prototypes.
 	int Run();
+
 };
 
 #endif
